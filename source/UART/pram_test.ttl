@@ -1,0 +1,19 @@
+
+DEBUG_SYNC = #$5A#$A5#$01
+
+DEBUG_TYPE_PRAM_WRITE_4_BYTES = $5C
+
+toggle = 0
+frame_type_byte = DEBUG_TYPE_PRAM_WRITE_4_BYTES * 2 + toggle
+
+send DEBUG_SYNC
+send frame_type_byte
+
+addr = #$12#$34
+send addr
+
+data = #$aa#$bb#$cc#$dd
+send data
+
+crc = #$0B#$EA
+send crc
