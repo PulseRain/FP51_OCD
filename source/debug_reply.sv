@@ -101,7 +101,7 @@ module debug_reply (
     // FSM
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                 
-        enum {S_IDLE, S_TX_WITHOUT_CRC, S_TX_WITHOUT_CRC_WAIT_DONE, S_TX_CRC, S_TX_CRC_DONE} states = S_IDLE;
+        enum {S_IDLE, S_TX_WITHOUT_CRC, S_TX_WITHOUT_CRC_WAIT_DONE, S_TX_CRC, S_TX_CRC_DONE} states = 0;
                 
         localparam FSM_NUM_OF_STATES = states.num();
         logic [FSM_NUM_OF_STATES - 1:0] current_state = 0, next_state;

@@ -110,7 +110,7 @@ module debug_UART #(parameter BAUD_PERIOD) (
     // FSM
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                 
-        enum {S_RX, S_TX} states = S_RX;
+        enum {S_RX, S_TX} states = 0;
                 
         localparam FSM_NUM_OF_STATES = states.num();
         logic [FSM_NUM_OF_STATES - 1:0] current_state = 0, next_state;

@@ -5,7 +5,9 @@
 
 parameter int              DEBUG_DATA_WIDTH = 8;
 parameter int              DEBUG_FRAME_LENGTH = 12;
-parameter int              DEBUG_EXT_FRAME_LENGTH = DEBUG_FRAME_LENGTH + 128 - 4 + 2; // 128 bytes data, minus 4 in the front, with 16 bit CRC
+parameter int              DEBUG_EXT_FRAME_LENGTH = DEBUG_FRAME_LENGTH + 1024 - 4 + 2; // 1024 bytes data, minus 4 in the front, with 16 bit CRC
+
+parameter int              DEBUG_128_FRAME_LENGTH = DEBUG_FRAME_LENGTH + 128 - 4 + 2; // 128 bytes data, minus 4 in the front, with 16 bit CRC
 
 parameter int              DEBUG_SYNC_LENGTH    = 3;
 parameter int              DEBUG_CRC_LEN        = 2;
@@ -23,6 +25,8 @@ parameter unsigned [DEBUG_DATA_WIDTH - 2 : 0]   DEBUG_TYPE_PRAM_WRITE_4_BYTES_WI
 parameter unsigned [DEBUG_DATA_WIDTH - 2 : 0]   DEBUG_TYPE_PRAM_WRITE_4_BYTES_WITH_ACK     = DEBUG_TYPE_PRAM_WRITE_4_BYTES_WITHOUT_ACK | 7'h1;
 
 parameter unsigned [DEBUG_DATA_WIDTH - 2 : 0]   DEBUG_TYPE_PRAM_WRITE_128_BYTES_WITH_ACK   = 7'b101_1011;
+
+parameter unsigned [DEBUG_DATA_WIDTH - 2 : 0]   DEBUG_TYPE_PRAM_WRITE_EXT_BYTES_WITH_ACK   = 7'b101_0111;
 
 parameter unsigned [DEBUG_DATA_WIDTH - 2 : 0]   DEBUG_TYPE_PRAM_READ_4_BYTES   = 7'b110_1101;
 

@@ -466,7 +466,7 @@ module debug_coprocessor (
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                 
         enum {S_IDLE, S_SYNC_1, S_SYNC_0, S_INPUT_WAIT, S_FRAME_TYPE, S_CRC, S_WR_ACK, S_PRAM_READ_WAIT, 
-              S_CPU_STATUS_ACK, S_DATA_MEM_READ_WAIT, S_WAIT_DONE, S_WR_EXT, S_EXT_CRC} states = S_IDLE;
+              S_CPU_STATUS_ACK, S_DATA_MEM_READ_WAIT, S_WAIT_DONE, S_WR_EXT, S_WR_EXT_128, S_EXT_CRC} states = 0;
                 
         localparam FSM_NUM_OF_STATES = states.num();
         logic [FSM_NUM_OF_STATES - 1:0] current_state = 0, next_state;
@@ -607,8 +607,16 @@ module debug_coprocessor (
                     
                     if (!crc_out) begin
                         case (frame_type) // synthesis parallel_case
-                                                            
+                                          
                             DEBUG_TYPE_PRAM_WRITE_128_BYTES_WITH_ACK  : begin
+                                ctl_pram_write_enable = 1'b1;
+                                ctl_crc_sync_reset = 1'b1;
+                                
+                                next_state [S_WR_EXT_128] = 1;
+                                
+                            end
+                            
+                            DEBUG_TYPE_PRAM_WRITE_EXT_BYTES_WITH_ACK  : begin
                                 ctl_pram_write_enable = 1'b1;
                                 ctl_crc_sync_reset = 1'b1;
                                 
@@ -767,9 +775,27 @@ module debug_coprocessor (
                         ctl_pram_write_enable = 1'b1;   
                         ctl_inc_pram_addr_ext = 1'b1;
                     end
-                            
                     
                 end
+                
+                current_state [S_WR_EXT_128] : begin
+                    
+                    ctl_wr_ext_enable = 1'b1;
+                    
+                    if (input_counter == (DEBUG_128_FRAME_LENGTH - DEBUG_FRAME_LENGTH)) begin
+                        next_state [S_EXT_CRC] = 1;         
+                    end else begin
+                        next_state [S_WR_EXT_128] = 1;
+                    end
+                    
+                    if (enable_in_sr[0] && (|input_counter[$high(input_counter) : 2]) && (input_counter [1:0] == 2'b01)) begin
+                        ctl_pram_write_enable = 1'b1;   
+                        ctl_inc_pram_addr_ext = 1'b1;
+                    end
+                    
+                end
+                
+                
                 
                 current_state [S_EXT_CRC] : begin
                     if (!crc_out) begin
